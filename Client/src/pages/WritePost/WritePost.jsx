@@ -114,7 +114,6 @@ function EditPost() {
           id="tags-standard"
           options={eventTypeList}
           getOptionLabel={(option) => option.title}
-          defaultValue={[eventTypeList[0]]}
           renderInput={(params) => (
             <CustomTextField {...params} variant="standard" label="행사 유형" placeholder="태그" />
           )}
