@@ -1,8 +1,8 @@
 import Header from './Header';
 import CommonPaper from './CommonPaper';
 import CommonStack from './CommonStack';
-import CommonTextField from './CommonTextField';
+import CustomTextField from './CustomTextField';
 
 export {
-  Header, CommonPaper, CommonStack, CommonTextField,
+  Header, CommonPaper, CommonStack, CustomTextField,
 };

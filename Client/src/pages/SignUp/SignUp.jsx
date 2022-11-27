@@ -10,7 +10,7 @@ import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
-import { CommonPaper, CommonTextField } from '../../components';
+import { CommonPaper, CustomTextField } from '../../components';
 import commonMsgText from '../../utils/commonMsgText';
 import termsList from '../../config';
 import { getNicknameDuplicate, getEmailDuplicate } from '../../api';
@@ -224,7 +224,7 @@ export default function SignUp() {
       <Stack component="form" onSubmit={handleSubmit} spacing={2}>
         <Stack spacing={1}>
           <Stack alignItems="flex-start" direction="row" spacing={1}>
-            <CommonTextField
+            <CustomTextField
               autoComplete="email"
               autoFocus
               helpermsgobj={emailMsgObj}
@@ -244,7 +244,7 @@ export default function SignUp() {
             </StyledOnelineButton>
           </Stack>
           <Stack alignItems="flex-start" direction="row" spacing={1}>
-            <CommonTextField
+            <CustomTextField
               autoComplete="off"
               helpermsgobj={nicknameMsgObj}
               inputProps={{ maxLength: 30 }}
@@ -263,7 +263,7 @@ export default function SignUp() {
               중복확인
             </StyledOnelineButton>
           </Stack>
-          <CommonTextField
+          <CustomTextField
             autoComplete="password"
             helpermsgobj={pwdMsgObj}
             name="password"
@@ -287,7 +287,7 @@ export default function SignUp() {
               ),
             }}
           />
-          <CommonTextField
+          <CustomTextField
             autoComplete="current-password"
             helpermsgobj={pwdConfirmMsgObj}
             name="confirmPassword"

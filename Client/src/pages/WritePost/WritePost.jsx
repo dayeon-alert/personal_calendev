@@ -1,17 +1,22 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import styled from '@emotion/styled';
+import Autocomplete from '@mui/material/Autocomplete';
+import Button from '@mui/material/Button';
+import FormControlLabel from '@mui/material/FormControlLabel';
 import Typography from '@mui/material/Typography';
 import Stack from '@mui/material/Stack';
+import Switch from '@mui/material/Switch';
 import '@toast-ui/editor/dist/toastui-editor.css';
 import ChevronRight from '@mui/icons-material/ChevronRight';
-import 'dayjs/locale/ko';
-import { Editor } from '@toast-ui/react-editor';
-import '@toast-ui/editor/dist/i18n/ko-kr'; // 한국어?
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import 'dayjs/locale/ko';
 import dayjs from 'dayjs';
-import { CommonTextField, CommonStack } from '../../components';
+import { Editor } from '@toast-ui/react-editor';
+import '@toast-ui/editor/dist/i18n/ko-kr';
+import { CustomTextField, CommonStack } from '../../components';
 
 /*
 1. editor 관련 props는 아래 링크를 확인
@@ -24,8 +29,31 @@ todos
 5. 썸네일 추후 적용
 */
 
+const eventTypeList = [
+  { key: 0, title: '세미나' },
+  { key: 1, title: '해커톤' },
+  { key: 2, title: '컨퍼런스' },
+  { key: 3, title: '대회' },
+  { key: 4, title: '부스트캠프' },
+];
+
+const stackList = [
+  { key: 0, title: 'Angular' },
+  { key: 1, title: 'jQuery' },
+  { key: 2, title: 'Polymer' },
+  { key: 3, title: 'React' },
+  { key: 4, title: 'Vue.js' },
+];
+
 function EditPost() {
+  const navigate = useNavigate();
   const [value, setValue] = useState(dayjs('2022-04-07'));
+  const [online, setOnline] = useState(true);
+
+  const handleSwitchChange = (event) => {
+    setOnline(event.target.checked);
+  };
+
   const handleChange = (newValue) => {
     setValue(newValue);
   };
@@ -43,6 +71,10 @@ function EditPost() {
     console.log(data.get('postTags'));
   };
 
+  const handleCancel = () => {
+    navigate(-1, { replace: true }); // go to prevPage
+  };
+
   // component main은 무엇인가?
   // customInput을 어떻게든 해결해야 한다.
   return (
@@ -51,38 +83,51 @@ function EditPost() {
         행사등록
       </Typography>
       <Stack component="form" onSubmit={handleSubmit} spacing={2}>
-        <StyledCustomTextField
-          placeholder="제목"
-          helperText="10/70자"
-          name="postTitle"
-        />
+        <StyledCustomTextField placeholder="제목" helperText="10/70자" name="postTitle" />
         <Stack direction="row" sx={{ alignItems: 'center' }}>
           <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="ko">
             <DateTimePicker
               value={value}
               onChange={handleChange}
-              renderInput={(params) => <CommonTextField {...params} />}
+              renderInput={(params) => <CustomTextField {...params} />}
               ampm={false}
             />
             <ChevronRight fontSize="small" />
             <DateTimePicker
               value={value}
               onChange={handleChange}
-              renderInput={(params) => (
-                <CommonTextField {...params} placeholder="" />
-              )}
+              renderInput={(params) => <CustomTextField {...params} placeholder="" />}
               ampm={false}
             />
           </LocalizationProvider>
         </Stack>
         <Stack direction="row" spacing={1}>
-          <CommonTextField name="postPhoneNumber" placeholder="연락처" />
-          <CommonTextField name="postEmail" placeholder="이메일" />
+          <CustomTextField name="postPhoneNumber" placeholder="연락처" />
+          <CustomTextField name="postEmail" placeholder="이메일" />
         </Stack>
-        <StyledCustomTextField
-          placeholder="장소"
-          name="postAddress"
-          helperText="0/150자"
+        <StyledCustomTextField placeholder="장소" name="postAddress" helperText="0/150자" />
+        <FormControlLabel
+          control={<Switch checked={online} onChange={handleSwitchChange} name="isOnline" />}
+          label="온라인으로 진행"
+        />
+        <Autocomplete
+          id="tags-standard"
+          options={eventTypeList}
+          getOptionLabel={(option) => option.title}
+          defaultValue={[eventTypeList[0]]}
+          renderInput={(params) => (
+            <CustomTextField {...params} variant="standard" label="행사 유형" placeholder="태그" />
+          )}
+        />
+        <Autocomplete
+          multiple
+          id="tags-standard"
+          options={stackList}
+          getOptionLabel={(option) => option.title}
+          defaultValue={[stackList[0]]}
+          renderInput={(params) => (
+            <CustomTextField {...params} variant="standard" label="스택" placeholder="태그" />
+          )}
         />
         <CommonEditorStack>
           <Editor
@@ -101,6 +146,14 @@ function EditPost() {
             ]}
           />
         </CommonEditorStack>
+        <Stack direction="row" justifyContent="center" spacing={3}>
+          <Button type="submit" variant="contained">
+            등록
+          </Button>
+          <Button color="warning" onClick={handleCancel} variant="contained">
+            취소
+          </Button>
+        </Stack>
       </Stack>
     </StyledCommonStack>
   );
@@ -115,18 +168,14 @@ const StyledCommonStack = styled(CommonStack)`
   }
 `;
 
-const StyledCustomTextField = styled(CommonTextField)`
+const StyledCustomTextField = styled(CustomTextField)`
   & > p {
     text-align: right;
   }
 `;
 
 const CommonEditorStack = styled(Stack)`
-  &
-    > *
-    > .toastui-editor-defaultUI
-    > .toastui-editor-toolbar
-    > .toastui-editor-defaultUI-toolbar {
+  & > * > .toastui-editor-defaultUI > .toastui-editor-toolbar > .toastui-editor-defaultUI-toolbar {
     flex-wrap: wrap;
     & .toastui-editor-dropdown-toolbar {
       flex-wrap: wrap;
